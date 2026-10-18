@@ -1,4 +1,7 @@
-#include <bits/stdc++.h>
+#include <vector>
+#include <map>
+#include <cstring>
+#include <iostream>
 
 using namespace std;
 
@@ -13,7 +16,7 @@ int colorsPresence[26];
 void colorManager(int color, vector<vector<int>> vis, vector<vector<int>> grid);
 
 // dfs
-void solveThisColor(int row, int col, vector<vector<int>> vis, vector<vector<int>> grid,int color, int recursionLimit) {
+void solveThisColor(int row, int col, vector<vector<int>> vis, vector<vector<int>> grid,int color) {
     if (solved) {
         return;
     }
@@ -32,11 +35,11 @@ void solveThisColor(int row, int col, vector<vector<int>> vis, vector<vector<int
         int newCol = col + dc[i];
         if (newRow < n && newCol < m && newRow >= 0 && newCol >= 0) {
             if (vis[newRow][newCol] == 0) {
-                solveThisColor(newRow, newCol, vis, grid, color, 0);
+                solveThisColor(newRow, newCol, vis, grid, color);
             }
 
             if (vis[newRow][newCol] == 2 && grid[newRow][newCol] == color) {
-                solveThisColor(newRow, newCol, vis, grid, color, 0);
+                solveThisColor(newRow, newCol, vis, grid, color);
             }
         }
     }
@@ -72,7 +75,7 @@ void colorManager(int color, vector<vector<int>> vis, vector<vector<int>> grid) 
 
     int row = colorIndexMap[color].first;
     int col = colorIndexMap[color].second;
-    solveThisColor(row, col, vis, grid,color,0);
+    solveThisColor(row, col, vis, grid,color);
 }
 
 int main() {
