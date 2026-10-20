@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
 
 using namespace std;
 
@@ -79,13 +80,18 @@ bool checkForStuckColors(int ind) {
 
     for (int row = 0; row < n; row++) {
         for (int col = 0; col < m; col++) {
-            if (checkerGrid[row][col] == 0) continue;
-            int top = 0, left = 0;
-            if (col-1 >= 0 && checkerGrid[row][col-1] == 1)
-                left = labelGrid[row][col-1];
+            if (checkerGrid[row][col] == 0) {
+                continue;
+            }
 
-            if (row-1 >= 0 && checkerGrid[row-1][col] == 1)
+            int top = 0, left = 0;
+            if (col-1 >= 0 && checkerGrid[row][col-1] == 1) {
+                left = labelGrid[row][col-1];
+            }
+
+            if (row-1 >= 0 && checkerGrid[row-1][col] == 1) {
                 top = labelGrid[row-1][col];
+            }
             
             if (top == 0 && left == 0) {
                 currentLabel++;
@@ -107,28 +113,43 @@ bool checkForStuckColors(int ind) {
         }
     }
 
-    for (auto tmp: colorsAccToFreeMoves) {
-        int color = tmp.second;
-        if (color == colorsAccToFreeMoves[ind].second) continue;
-        
+    // Only colours yet to be drawn can get stuck, earlier ones are already complete
+    for (int i = ind + 1; i < colorsAccToFreeMoves.size(); i++) {
+        int color = colorsAccToFreeMoves[i].second;
+
         int startPosX = colorX[color][0];
         int startPosY = colorY[color][0];
 
         int endPosX = colorX[color][1];
         int endPosY = colorY[color][1];
 
+        // Adjacent endpoints are already connected
+        if (abs(startPosX - endPosX) + abs(startPosY - endPosY) == 1) {
+            continue;
+        }
+
         bool ok = 0;
         for (int k1 = 0; k1 < 4; k1++) {
             int newStartX = startPosX + dr[k1];
             int newStartY = startPosY + dc[k1];
 
-            if (newStartX < 0 || newStartY < 0 || newStartX >= n || newStartY >= m) continue;
+            if (newStartX < 0 || newStartY < 0 || newStartX >= n || newStartY >= m) {
+                continue;
+            }
+            if (vis[newStartX][newStartY] != 0) {
+                continue;
+            }
 
             for (int k2 = 0; k2 < 4; k2++) {
                 int newEndX = endPosX + dr[k2];
                 int newEndY = endPosY + dc[k2];
 
-                if (newEndX < 0 || newEndY < 0 || newEndX >= n || newEndY >= m) continue;
+                if (newEndX < 0 || newEndY < 0 || newEndX >= n || newEndY >= m) {
+                    continue;
+                }
+                if (vis[newEndX][newEndY] != 0) {
+                    continue;
+                }
 
                 if (findParent(labelGrid[newStartX][newStartY]) == findParent(labelGrid[newEndX][newEndY])) {
                     ok = 1;                    
