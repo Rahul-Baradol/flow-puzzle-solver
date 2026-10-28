@@ -57,17 +57,29 @@ void dfs() {
 
         if (row == destX && col == destY) {
             int newColor = colorConnection[color];
-            
-            if (newColor == -1) {
-                solved = 1;
-                return;
-            }
-            
-            int newRow = colorX[newColor][0];
-            int newCol = colorY[newColor][0];
 
-            st.push({newRow, newCol, newColor});
-            continue;
+            if (newColor == -1) {
+                bool ok = 1;
+                for (int i = 0; i < n; i++) {
+                    for (int j = 0; j < m; j++) {
+                        if (grid[i][j] == -1) {
+                            ok = 0;
+                            break;
+                        }
+                    }
+                }
+
+                if (ok) {
+                    solved = 1;
+                    return;
+                }
+            } else {
+                int newRow = colorX[newColor][0];
+                int newCol = colorY[newColor][0];
+    
+                st.push({newRow, newCol, newColor});
+                continue;
+            }
         }
 
         path.push({row, col});
