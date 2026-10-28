@@ -19,8 +19,6 @@ bool solved = false;
 int dr[4] = {-1,0,1,0};
 int dc[4] = {0,-1,0,1};
 
-void colorManager(int color);
-
 // Disjoint Set/ Union Find/ Merge Set
 void initializeDisjointSet(int countOfNodes) {
     parent.resize(countOfNodes+1);
