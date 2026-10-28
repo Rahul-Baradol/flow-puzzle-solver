@@ -37,6 +37,28 @@ vector<pair<int,int>> path;
 
 vector<vector<int>> deflections;
 
+void backtrack(int &row, int &col) {
+    pair<int,int> tmp = path.back();
+    while (path.size()) {
+        if (deflections[tmp.first][tmp.second] > 0) {
+            deflections[tmp.first][tmp.second]--;
+            break;
+        }
+        path.pop();
+
+        grid[tmp.first][tmp.second] = pastGrid[tmp.first][tmp.second];
+        vis[tmp.first][tmp.second] = pastVis[tmp.first][tmp.second];
+
+        if (path.size())
+            tmp = path.back();
+        else
+            break;
+    }
+
+    grid[row][col]  = pastGrid[row][col];
+    vis[row][col] = pastVis[row][col];
+}
+
 void dfs() {
     int initalColor = colorPresent[0];
     int initialX = colorX[initalColor][0];
@@ -73,13 +95,14 @@ void dfs() {
                     solved = 1;
                     return;
                 }
+                backtrack(row, col);
             } else {
                 int newRow = colorX[newColor][0];
                 int newCol = colorY[newColor][0];
     
                 st.push({newRow, newCol, newColor});
-                continue;
             }
+            continue;
         }
 
         path.push({row, col});
@@ -105,25 +128,7 @@ void dfs() {
         }
 
         if (!ok && path.size()) {
-            pair<int,int> tmp = path.back();
-            while (path.size()) {
-                if (deflections[tmp.first][tmp.second] > 0) {
-                    deflections[tmp.first][tmp.second]--;
-                    break;
-                }
-                path.pop();
-
-                grid[tmp.first][tmp.second] = pastGrid[tmp.first][tmp.second];
-                vis[tmp.first][tmp.second] = pastVis[tmp.first][tmp.second];
-
-                if (path.size())
-                    tmp = path.back();
-                else
-                    break;
-            }
-
-            grid[row][col]  = pastGrid[row][col];
-            vis[row][col] = pastVis[row][col];
+            backtrack(row, col);
         }
     }
 }
